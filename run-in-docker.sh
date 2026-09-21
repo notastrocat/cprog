@@ -29,18 +29,6 @@ else
   echo
 fi
 
-#docker run --rm -it \
-#		   -u $(id -u):$(id -g) \
-#           -w /work \
-#           -v $(pwd):/work \
-#           --env DISPLAY=unix$DISPLAY \
-#           --privileged \
-#           --volume /tmp/.X11-unix:/tmp/.X11-unix \
-#		   --volume /home/${USER}/.bashrc:/home/${USER}/.bashrc \
-#		   --volume /home/${USER}/.vimrc:/home/${USER}/.vimrc \
-#           $IMAGE_NAME \
-#           /bin/bash
-
 docker run --rm -it \
     -u $(id -u):$(id -g) \
     -v /etc/passwd:/etc/passwd:ro \
@@ -52,6 +40,9 @@ docker run --rm -it \
     --privileged \
     --volume /tmp/.X11-unix:/tmp/.X11-unix \
     --volume /home/${USER}/.vimrc:/home/${USER}/.vimrc \
+    --volume /home/${USER}/.config/starship.toml:/home/${USER}/.config/starship.toml \
+    --volume /tmp/:/home/${USER}/.cache \
+    --volume ~/.bashrc_docker:/home/${USER}/.bashrc \
     $IMAGE_NAME \
     /bin/bash
 

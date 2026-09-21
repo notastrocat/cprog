@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <time.h>
+
+/**
+ * array of moon phase descriptions; used by `get_moon_phase` fn.
+ */
+const char *g_phases[8] = {
+    "waxing crescent 🌒", "at first quarter 🌓", "waxing gibbous 🌔",  "full 🌕",
+    "waning gibbous 🌖",  "at last quarter 🌗",  "waning crescent 🌘", "new 🌑"};
+
+/**
+ * @brief fetch *mostly* accurate moon phase.
+ * @returns a number 0-7 which can used to read an *almost* accurate moon phase
+ * using `g_phases` array.
+ *
+ * @param[in] year year to check moon phase for.
+ * @param[in] month month to check moon phase for.
+ * @param[in] day day to check moon phase for.
+ *
+ * @param[out] moon_phase - ranging from 0-7.
+ */
+int get_moon_phase(int year, int month, int day)
+{
+    int d, g, e;
+
+    d = day;
+
+    if (month == 2) {
+        d += 31;
+    } else if (month > 2) {
+        d += 59 + (month - 3) * 30.6 + 0.5;
+    }
+
+    g = (year - 1900) % 19;
+    e = (11 * g + 29) % 30;
+
+    if (e == 25 || e == 24) {
+        e++;
+    }
+
+    return ((((e + d) * 6 + 5) % 177) / 22 & 7);
+}
+
+int main(int argc, char **argv)
+{
+    time_t now;
+    struct tm *clock;
+    char time_string[64];
+
+    time(&now);
+    clock = localtime(&now);
+
+    strftime(time_string, 64, "Today is %a, %b %d, %Y%nIt is %r%n", clock);
+
+    printf("%s\n", time_string);
+
+    printf("Good ");
+
+    if (clock->tm_hour < 12) {
+        printf("morning, ");
+    } else if (clock->tm_hour < 18) {
+        printf("afternoon, ");
+    } else {
+        printf("evening, ");
+    }
+
+    if (argc > 1) {
+        printf("%s.\n", argv[1]);
+    }
+
+    int moon_phase =
+        get_moon_phase((clock->tm_year + 1900), clock->tm_mon, clock->tm_mday);
+    printf("%s\n\n", g_phases[moon_phase]);
+
+    return 0;
+}
