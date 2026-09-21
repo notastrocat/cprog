@@ -1,0 +1,57 @@
+#!/bin/bash
+
+IMAGE_NAME="cprog"
+
+xhost +
+export DISPLAY=:0.0
+
+# Check if the Docker image exists
+if [[ "$(docker images -q $IMAGE_NAME 2> /dev/null)" == "" ]]; then
+  echo
+  echo -e "\e[35;1;3mImage \e[4m'$IMAGE_NAME'\e[24m is not present locally; building it now...\e[0m"
+  echo
+  docker build -t $IMAGE_NAME .
+  echo
+  echo -e "\e[32;1;3mImage \e[4m'$IMAGE_NAME'\e[24m has been built successfully.\e[0m"
+  echo
+  echo "starting a new container with this new image..."
+  echo
+  docker run --rm -it \
+             -w /work \
+             -v $(pwd):/work \
+             --env DISPLAY=unix$DISPLAY \
+             --privileged \
+             --volume /tmp/.X11-unix:/tmp/.X11-unix \
+             $IMAGE_NAME \
+             /bin/bash
+else
+  echo -e "\e[32;1;3mImage \e[4m'$IMAGE_NAME'\e[24m is present locally.\e[0m"
+  echo
+fi
+
+#docker run --rm -it \
+#		   -u $(id -u):$(id -g) \
+#           -w /work \
+#           -v $(pwd):/work \
+#           --env DISPLAY=unix$DISPLAY \
+#           --privileged \
+#           --volume /tmp/.X11-unix:/tmp/.X11-unix \
+#		   --volume /home/${USER}/.bashrc:/home/${USER}/.bashrc \
+#		   --volume /home/${USER}/.vimrc:/home/${USER}/.vimrc \
+#           $IMAGE_NAME \
+#           /bin/bash
+
+docker run --rm -it \
+    -u $(id -u):$(id -g) \
+    -v /etc/passwd:/etc/passwd:ro \
+    -v /etc/group:/etc/group:ro \
+    -w /work \
+    -v $(pwd):/work \
+    --net=host \
+    --env DISPLAY=$DISPLAY \
+    --privileged \
+    --volume /tmp/.X11-unix:/tmp/.X11-unix \
+    --volume /home/${USER}/.vimrc:/home/${USER}/.vimrc \
+    $IMAGE_NAME \
+    /bin/bash
+
