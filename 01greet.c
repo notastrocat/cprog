@@ -45,14 +45,23 @@ int main(int argc, char **argv)
 {
     time_t now;
     struct tm *clock;
-    char time_string[64];
+    char date_string[32];
+    char time_string[32];
 
     time(&now);
     clock = localtime(&now);
 
-    strftime(time_string, 64, "Today is %a, %b %d, %Y%nIt is %r%n", clock);
+    strftime(date_string, 32, "%nToday is %a, %b %d, %Y%n", clock);
 
-    printf("%s\n", time_string);
+    printf("%s", date_string);
+
+    int moon_phase =
+        get_moon_phase((clock->tm_year + 1900), clock->tm_mon, clock->tm_mday);
+    printf("[Moon Phase] %s\n", g_phases[moon_phase]);
+
+    strftime(time_string, 32, "%nIt is %r right now.%n", clock);
+
+    printf("%s", time_string);
 
     printf("Good ");
 
@@ -66,11 +75,9 @@ int main(int argc, char **argv)
 
     if (argc > 1) {
         printf("%s.\n", argv[1]);
+    } else {
+        printf("stranger.\n");
     }
-
-    int moon_phase =
-        get_moon_phase((clock->tm_year + 1900), clock->tm_mon, clock->tm_mday);
-    printf("%s\n\n", g_phases[moon_phase]);
 
     return 0;
 }
