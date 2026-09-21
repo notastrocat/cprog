@@ -79,5 +79,12 @@ int main(int argc, char **argv)
         printf("stranger.\n");
     }
 
+    if (clock->tm_hour >= 5 && clock->tm_hour <= 7) {
+        printf("You're up early today!\n\n");
+    } else if (clock->tm_hour == 23 ||
+               (clock->tm_hour >= 0 && clock->tm_hour <= 2)) {
+        printf("Working late, huh?\n\n");
+    }
+
     return 0;
 }
