@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-build_dir="$script_dir/../build"
+build_dir="$script_dir/build"
+
+if [[ "$1" == "rebuild" ]]; then
+    echo "cleaning the build dir..."
+    rm -fr "$build_dir" || { echo "couldn't clean the build dir!!"; exit 1; }
+fi
 
 if ! command -v clang >/dev/null 2>&1 || ! command -v clang++ >/dev/null 2>&1; then
 	if ! command -v apt-get >/dev/null 2>&1; then
@@ -25,7 +30,7 @@ if ! command -v clang >/dev/null 2>&1 || ! command -v clang++ >/dev/null 2>&1; t
 	"${apt[@]}" install -y --no-install-recommends clang
 fi
 
-cmake -S "$script_dir/.." -B "$build_dir" \
+cmake -S "$script_dir" -B "$build_dir" \
 	-DCMAKE_C_COMPILER=clang \
 	-DCMAKE_CXX_COMPILER=clang++
 cmake --build "$build_dir"

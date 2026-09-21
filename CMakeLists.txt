@@ -7,5 +7,10 @@ set(CMAKE_CXX_COMPILER clang++)
 project(tiny-c-projects C CXX)
 set(INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
 
-add_executable(tiny-c-projects 01greet.c)
+add_subdirectory(greetings)
+
+add_executable(tiny-c-projects main.c)
+
+target_link_libraries(tiny-c-projects greetings)
+
 install(TARGETS tiny-c-projects RUNTIME DESTINATION "${INSTALL_PREFIX}/bin")

@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <time.h>
+#include <greet.h>
 
 /**
  * array of moon phase descriptions; used by `get_moon_phase` fn.
@@ -8,17 +7,6 @@ const char *g_phases[8] = {
     "waxing crescent 🌒", "at first quarter 🌓", "waxing gibbous 🌔",  "full 🌕",
     "waning gibbous 🌖",  "at last quarter 🌗",  "waning crescent 🌘", "new 🌑"};
 
-/**
- * @brief fetch *mostly* accurate moon phase.
- * @returns a number 0-7 which can used to read an *almost* accurate moon phase
- * using `g_phases` array.
- *
- * @param[in] year year to check moon phase for.
- * @param[in] month month to check moon phase for.
- * @param[in] day day to check moon phase for.
- *
- * @param[out] moon_phase - ranging from 0-7.
- */
 int get_moon_phase(int year, int month, int day)
 {
     int d, g, e;
@@ -41,7 +29,7 @@ int get_moon_phase(int year, int month, int day)
     return ((((e + d) * 6 + 5) % 177) / 22 & 7);
 }
 
-int main(int argc, char **argv)
+int greet(int argc, char **argv)
 {
     time_t now;
     struct tm *clock;
