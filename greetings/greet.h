@@ -2,8 +2,8 @@
 #include <time.h>
 
 /**
- * @brief fetch *mostly* accurate moon phase.
- * @returns a number 0-7 which can used to read an *almost* accurate moon phase
+ * @brief fetch _mostly_ accurate moon phase.
+ * @returns a number 0-7 which can used to read an _almost_ accurate moon phase
  * using `g_phases` array.
  *
  * @param[in] year year to check moon phase for.
