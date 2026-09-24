@@ -3,16 +3,15 @@
     Linux.  Read the "database" of pithy texts and print one of them, randomly.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "reed.h"
 
 /*
     the size of the buffer, used for reading a chunk of the file at a time.
 */
 #define BSIZE 127
 
-int main()
+
+int reed()
 {
     const char filename[] = "pithy.txt";
 

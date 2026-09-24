@@ -8,9 +8,11 @@ project(tiny-c-projects C CXX)
 set(INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
 
 add_subdirectory(greetings)
+add_subdirectory(reed)
 
 add_executable(tiny-c-projects main.c)
 
 target_link_libraries(tiny-c-projects greetings)
+target_link_libraries(tiny-c-projects reed)
 
 install(TARGETS tiny-c-projects RUNTIME DESTINATION "${INSTALL_PREFIX}/bin")
