@@ -8,4 +8,4 @@
  * the binary).
  * @returns 1 on errors; 0 otherwise.
  */
-int reed();
+int randsay();

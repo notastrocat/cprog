@@ -1,16 +1,12 @@
 /*
-    Version 1.0 of this file.  Read the "database" of pithy texts and print them.
+    Version 3.0, aka, final version of this file.  We plan to do something like
+   'fortune' in Linux.  Read the "database" of pithy texts and print one of
+   them, randomly.
 */
 
-#include "reed.h"
+#include "randsay.h"
 
-/*
-    the size of the buffer, used for reading a chunk of the file at a time.
-*/
-#define BSIZE 127
-
-
-int reed()
+int randsay()
 {
     const char filename[] = "pithy.txt";
 
@@ -27,11 +23,9 @@ int reed()
     */
 
     FILE *fp;
-    char buffer[BSIZE];
-    char *r;
-    int items = 0;
-    char **list_base;
-    int status = 0;
+    char *buffer = NULL;
+    size_t buffer_size = 0;
+    int line_count = 0;
 
     /*
         Open the file in read-only mode.  Proceed only if there are no errors
@@ -42,7 +36,7 @@ int reed()
 
     if ( NULL == fp ) {
         fprintf( stderr, "Unable to open file %s\n", filename );
-        exit( 1 );
+        return 1;
     }
 
     /*
@@ -74,66 +68,44 @@ int reed()
         _realloc_ API in C!  And, spoiler alert!  we're going to do that.
     */
 
-    list_base = (char **)malloc( sizeof( char * ) * 100 );
-    if ( NULL == list_base ) {
-        fprintf( stderr,
-                 "Unable to allocate memory for list of lines in file.\n" );
-        fclose( fp );
+    while ( getline(&buffer, &buffer_size, fp) != -1 ) {
+        line_count++;
+    }
+
+    if (ferror(fp)) {
+        fprintf(stderr, "Error while reading %s\n", filename);
+        free(buffer);
+        fclose(fp);
         return 1;
     }
 
-    while ( !feof( fp ) ) {
-        r = fgets( buffer, BSIZE, fp );
+    if (line_count == 0) {
+        fprintf(stderr, "Uh oh!  The database is empty.\n");
+        free(buffer);
+        fclose(fp);
+        return 1;
+    }
 
-        if ( NULL == r ) {
+    rewind( fp );  // reset cursor back to the start of the file.
+
+    srand( (unsigned)time( NULL ) );
+    int selected_line = rand() % line_count;
+    line_count = 0;  // reset line count
+
+    while ( getline(&buffer, &buffer_size, fp) != -1 ) {
+        if ( line_count == selected_line ) {
+            printf( "%s", buffer );
             break;
         }
 
-        char *entry = (char *)malloc( strlen( buffer ) + 1 );
-
-        if ( NULL == entry ) {
-            fprintf( stderr,
-                     "Unable to allocate memory for line #%3d in file.\n",
-                     items );
-            status = 1;
-            goto cleanup;
-        }
-
-        strcpy( entry, buffer );
-
-        // in normal case, we can print this & free the *entry* to reuse again.
-        // printf("%3d: %s", items, entry);
-
-        *( list_base + items ) = entry;
-
-        items++;
-
-        if ( items % 100 == 0 ) {
-            char **resized_list = (char **)realloc(
-                list_base, sizeof( char * ) * ( items + 100 ) );
-
-            if ( NULL == resized_list ) {
-                fprintf( stderr, "Unable to reallocate more memory for list of "
-                                 "lines in file.\n" );
-                status = 1;
-                goto cleanup;
-            }
-
-            list_base = resized_list;
-        }
+        line_count++;
     }
 
-    for ( int i = 0; i < items; i++ ) {
-        printf( "%3d: %s", i, *( list_base + i ) );
-    }
 
-cleanup:
-    for ( int i = 0; i < items; i++ ) {
-        free( list_base[i] );
-    }
+    /* At last, like any good boi, close the file! ;p */
 
+    free(buffer);
     fclose( fp );
-    free(list_base);
 
-    return status;
+    return 0;
 }

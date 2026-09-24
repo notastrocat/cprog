@@ -1,12 +1,12 @@
 #include "greetings/greet.h"
-#include "reed/reed.h"
+#include "randsay/randsay.h"
 
 int main(int argc, char **argv)
 {
     // avoid handling errors from these APIs for now.
     greet(argc, argv);
     printf("\n");
-    reed();
+    randsay();
 
     return 0;
 }
