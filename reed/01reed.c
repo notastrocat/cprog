@@ -1,6 +1,5 @@
 /*
-    Version 1.0 of this file.  We plan to do something like 'fortune' in
-    Linux.  Read the "database" of pithy texts and print one of them, randomly.
+    Version 1.0 of this file.  Read the "database" of pithy texts and print them.
 
     I realize that, generally speaking, I've never really written much file I/O
     code myself... so, I'll be using this opportunity to make myself better

@@ -3,7 +3,7 @@ include_guard()
 
 if (NOT TARGET reed)
     add_library(reed SHARED
-        "${CMAKE_CURRENT_LIST_DIR}/02reed.c"
+        "${CMAKE_CURRENT_LIST_DIR}/reed.c"
     )
     target_include_directories(reed PUBLIC
         "${CMAKE_CURRENT_LIST_DIR}"
