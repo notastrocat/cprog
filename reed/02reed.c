@@ -108,7 +108,9 @@ int main()
         items++;
 
         if ( items % 100 == 0 ) {
-            list_base = (char **)malloc( sizeof( char * ) * ( items + 100 ) );
+            list_base = (char **)realloc( list_base,
+                                          sizeof( char * ) * ( items + 100 ) );
+
             if ( NULL == list_base ) {
                 fprintf( stderr, "Unable to reallocate more memory for list of "
                                  "lines in file.\n" );
